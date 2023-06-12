@@ -20,7 +20,7 @@ export const pin=async(req,res,next)=>{
     try{
     const {_id,pin}=req.body;
     if(!_id) return res.send("Id is required");
-    if(!pin) return res.send("Pin is required.");
+    if(!pin) return res.send("Pin is required in middleware");
 
     const response=await User.find({_id}).exec();
    
@@ -31,7 +31,7 @@ export const pin=async(req,res,next)=>{
     if(decipher==pin){
         next();
     }else{
-        return res.send("Incorrect pin");
+        return res.send("Incorrect pin in middleware");
     }
     }catch(error){
         return res.send(error);

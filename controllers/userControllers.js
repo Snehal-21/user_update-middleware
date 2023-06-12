@@ -30,13 +30,13 @@ export const register = async (req, res) => {
 
 export const changeNumber = async (req, res) => {
     try {
-        const { email, number } = req.body;
-        if (!email) return res.send("email is required!");
+        const { _id, number } = req.body;
+        if (!_id) return res.send("email is required!");
         if (!number) return res.send("number is required.")
-        const response = await User.find({ email }).exec();
+        const response = await User.find({ _id }).exec();
         console.log(response)
         if (!response.length) return res.send("User not find.")
-        const update = await User.findOneAndUpdate({ email }, { number });
+        const update = await User.findOneAndUpdate({ _id }, { number }).exec();
         await update.save();
         return res.send("Number updated");
     } catch (error) {
@@ -47,10 +47,54 @@ export const changeNumber = async (req, res) => {
 
 export const changepan=async(req,res)=>{
     try{
-        const {email,pan_card}=req.body;
-        const update=await User.findOneAndUpdate({email},{pan_card});
+        const {_id,pan_card}=req.body;
+        if(!pan_card) return res.send("PAN crd is required.");
+        const user=await User.find({_id}).exec();
+        const update=await User.findOneAndUpdate({_id},{pan_card}).exec();
         await update.save();
         return res.send("PAN card updated")
+    }catch(error){
+        return res.send(error);
+    }
+}
+
+export const changeaddress=async(req,res)=>{
+    try{
+        const {_id,address}=req.body;
+        if(!_id) return res.send("ID is required.");
+        if(!address) return res.send("Address is required.")
+        const update=await User.findOneAndUpdate({_id},{address}).exec();
+        await update.save();
+        return res.send("Address is updated.")
+    }catch(error){
+        return res.send(error)
+    }
+}
+
+export const changename=async(req,res)=>{
+    try{
+        const { _id,name }=req.body;
+        if(!_id) return res.send("ID is required.");
+        if(!name) return res.send("Name is required.");
+        const update=await User.findOneAndUpdate({_id},{name}).exec();
+        await update.save();
+        return res.send("Name is updated.")
+    }catch(error){
+        return res.send(error);
+    }
+}
+
+export const changepassword=async(req,res)=>{
+    try{
+        const {_id,password }=req.body;
+        if(!_id) return res.send("ID is required.");
+        if(!password) return res.send("Password is required.")
+
+        var secretkey="pass";
+        var encrypt_pass=encrypt.encrypt(password,secretkey,256);
+        const update=await User.findOneAndUpdate({_id},{password:encrypt_pass}).exec();
+        await update.save();
+        return res.send("Password is updated.")
     }catch(error){
         return res.send(error);
     }
